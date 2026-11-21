@@ -1,6 +1,6 @@
 ---
 name: fazer-commit
-description: Use quando o usuário pedir para fazer commit, separar mudanças em vários commits ou digitar /fazer-commit. Examina o diff, separa as mudanças em commits lógicos, roda os testes do projeto quando há código, escreve mensagens Conventional Commits em português e executa git commit. NÃO usar para push, pull request, merge, rebase, amend ou para só sugerir uma mensagem sem commitar.
+description: Use quando o usuário pedir para fazer commit, separar mudanças em vários commits, sincronizar com o remoto (pull/push), resolver conflitos de merge ou digitar /fazer-commit. Examina o diff, separa as mudanças em commits lógicos, roda os testes do projeto quando há código, escreve mensagens Conventional Commits em português, integra o trabalho de outras pessoas e resolve conflitos entendendo os dois lados (base, nosso, deles). NÃO usar para pull request, rebase, amend, force push ou para só sugerir uma mensagem sem commitar.
 ---
 
 # Fazer commits (Conventional Commits, em português)
@@ -13,8 +13,9 @@ usar `repositorio` (pasta do git, se não for a raiz), `escopos`, `comando_teste
 `nunca_commitar` e `equipe` (modelo em `modelos/CLAUDE-perfil.md`). Sem perfil, inferir os
 escopos dos nomes de pastas/módulos e do histórico (`git log`), e os testes pelo README.
 
-Só faça commit quando o usuário pedir. Não faça push, não abra PR, não faça merge e não reescreva
-histórico (`--amend`, `rebase`, `reset --hard`, `push --force`) sem pedido explícito.
+Só faça commit quando o usuário pedir. Pull e push só quando ele pedir (ou aprovar na hora). Não
+abra PR e não reescreva histórico (`--amend`, `rebase`, `reset --hard`, `push --force`) sem pedido
+explícito — em repositório compartilhado isso apaga trabalho de outra pessoa.
 
 ## Formato
 
@@ -82,8 +83,10 @@ Um commit = uma mudança lógica que faz sentido sozinha e passa nos testes.
 
 ## Fluxo
 
-1. **Histórico e branch:** `git log --oneline -10` (manter o estilo) e `git branch --show-current`.
-   Se estiver na branch principal de um repositório compartilhado, pergunte se deve criar uma
+1. **Histórico, branch e remoto:** `git log --oneline -10` (manter o estilo),
+   `git branch --show-current` e, se houver remote, `git fetch` + `git status -sb` para saber se a
+   branch está atrás/à frente. Se estiver atrás, avise (o push vai pedir integração; ver
+   "Sincronizar"). Na branch principal de um repositório compartilhado, pergunte se deve criar uma
    branch antes. Primeiro commit de um repositório vazio pode ir direto na principal.
 2. **Ver as mudanças:** `git status --short`, `git diff --stat`, `git diff` (e `--staged`). Sem
    mudanças → avise e pare; nunca commit vazio.
@@ -107,10 +110,63 @@ Um commit = uma mudança lógica que faz sentido sozinha e passa nos testes.
 6. **Conferir:** `git log --oneline -<n>` e `git status --short` (o que sobrou deve ser só o que
    ficou de fora de propósito).
 7. **Relatar:** lista dos commits (hash curto + primeira linha), o que ficou de fora e por quê, e
-   que não houve push.
+   se houve push ou não.
+
+## Sincronizar com o remoto (quando o usuário pedir pull/push)
+
+1. **Antes de integrar:** working tree limpa (commite ou pergunte o que fazer com o pendente; não
+   use `git stash` sem avisar). `git fetch` e veja o que chegou:
+   `git log --oneline HEAD..origin/<branch>` (dos outros) e `git log --oneline origin/<branch>..HEAD`
+   (seus). Resuma ao usuário quem mudou o quê.
+2. **Integrar com merge** (padrão: preserva o histórico de todos):
+   `git pull --no-rebase --no-edit origin <branch>`. Rebase só se o usuário pedir.
+3. Sem conflito → rode `comando_testes` se entrou código.
+4. Com conflito → seção "Resolver conflitos".
+5. **Push** (`git push origin <branch>`) só com pedido/aprovação. Recusado por estar atrás →
+   integrar de novo; **nunca** `--force`.
+
+## Resolver conflitos
+
+Objetivo: preservar a intenção dos dois lados. Conflito não se resolve escolhendo um lado "no
+escuro": é o trabalho de outra pessoa que pode sumir.
+
+1. **Mapear:** `git status` e `git diff --name-only --diff-filter=U`. Para cada arquivo, entender os
+   dois lados antes de editar:
+   - `git log --merge --format='%h %an: %s' -- <arquivo>`: commits de cada lado, autor e motivo;
+   - `git show :1:<arquivo>` (base comum), `:2:` (nosso), `:3:` (deles);
+   - o código em volta (quem chama, testes que cobrem).
+2. **Classificar e decidir cada trecho:**
+
+   | Situação | O que fazer |
+   |---|---|
+   | Mudanças independentes que só ficaram próximas | Manter as duas |
+   | Mesma correção feita dos dois lados | Manter uma; conferir se são equivalentes |
+   | Um lado refatorou/renomeou e o outro alterou o código antigo | Reaplicar a alteração dentro da versão refatorada |
+   | Decisões diferentes (parâmetro, interface, algoritmo, formato de dados) | **Perguntar ao usuário**, mostrando as duas versões, autores e impacto |
+   | Arquivo gerado por ferramenta (espelho de Overleaf, `package-lock`, build, resultados) | Não mesclar à mão: regenerar pela ferramenta (ex.: `importar-overleaf.ps1`, `npm install`, script de experimento) |
+   | Binário (imagem, PDF) | Perguntar qual versão fica |
+   | Apagado de um lado e alterado do outro | Perguntar (pode ter sido movido: `git log --follow`) |
+
+3. **Editar** removendo os marcadores (`<<<<<<<`, `=======`, `>>>>>>>`) e deixando o resultado
+   coerente (imports, nomes, chamadas). Conferir `git diff --check` e
+   `grep -rn '^<<<<<<<\|^>>>>>>>' -- <arquivos>` (nada pode sobrar).
+4. **Validar:** `comando_testes` (e compilar, se for documento/código compilado). Falhou →
+   corrigir ou perguntar antes de concluir.
+5. **Concluir:** `git add -- <arquivos>` e `git commit -F` com
+   `merge: integra origin/<branch> (conflitos em <arquivos>)` e, no corpo, uma linha por arquivo
+   com o que foi mantido de cada lado e por quê, o resultado dos testes e a linha de coautoria.
+6. **Relatar:** arquivos, decisão em cada um, o que foi perguntado, testes. Se algo de outra
+   pessoa foi descartado (com aprovação), dizer explicitamente para ela ser avisada.
+7. **Desistir é seguro:** `git merge --abort` volta ao estado anterior sem perder nada.
+
+**Prevenção** (sugerir quando fizer sentido): fetch/pull antes de começar; commits pequenos e
+frequentes; uma branch por frente de trabalho; combinar quem mexe nos arquivos compartilhados.
 
 ## Segurança
 
 - Não altere a configuração do git (`git config`), nem nome/e-mail do autor.
 - Não use `--no-verify`. Se um hook falhar, corrija, faça o stage de novo e repita o mesmo commit (sem `--amend`).
 - Não use `--amend`, `rebase`, `reset --hard`, `push --force` nem `git history` sem pedido explícito.
+- Não resolva conflito com `-X ours`/`-X theirs` nem `git checkout --ours/--theirs` no arquivo
+  inteiro sem ter lido os dois lados e sem o usuário concordar.
+- `git merge --abort` é sempre permitido para desfazer uma integração em andamento.

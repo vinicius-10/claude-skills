@@ -11,12 +11,19 @@ Escritas em português.
 | [`fazer-commit`](skills/fazer-commit/SKILL.md) | Separa o diff em commits lógicos, roda os testes antes de commitar código e escreve mensagens Conventional Commits em português. Nunca faz push/rebase/amend sem pedido. |
 | [`medir-desempenho`](skills/medir-desempenho/SKILL.md) | Metodologia de benchmark: validade antes de tempo, decomposição de tempos, repetições e mediana, captura automática do hardware (Windows/macOS/Linux), CSV padrão, speedup, eficiência, Karp–Flatt, gráficos. |
 | [`escrever-documento-latex`](skills/escrever-documento-latex/SKILL.md) | Escreve e revisa TCC/relatório/artigo em LaTeX (local ou Overleaf) sem trocar a voz do autor: o que pode ser editado, fontes de verdade, estilo impessoal, padrões de figura/tabela/sigla/citação, compilação e cópia versionada no git. |
+| [`otimizar-timing-fpga`](skills/otimizar-timing-fpga/SKILL.md) | Fechar *timing* e reduzir área em FPGA (Vivado, 7-series/UltraScale): fluxo *non-project* reprodutível, leitura do caminho crítico por primitiva, alavancas da menos para a mais invasiva, ruído de *placement* e relato antes → depois. |
 | [`abnt-academico`](skills/abnt-academico/SKILL.md) | Normalização ABNT (NBR 14724:2024, 10520:2023, 6023, 6028...) e APA 7, com perfil para a **UTFPR** (referências pela NBR 6023:2018 e convenções do template LaTeX `utfpr.cls`). Baseada no projeto de Carlos Alberto Ferreira (MIT). |
 
-Ferramenta: [`ferramentas/importar-overleaf.ps1`](ferramentas/importar-overleaf.ps1) espelha um
-projeto do Overleaf (zip do código-fonte) numa pasta local para versionar no git. Baixa direto com
-a sessão do [overleaf-mcp-rt](https://github.com/DanielHou315/overleaf-mcp-rt) (sem expor o
-cookie) ou usa um zip baixado à mão, e tem travas para não apagar nada fora da cópia.
+Ferramentas (PowerShell, Windows):
+
+- [`ferramentas/importar-overleaf.ps1`](ferramentas/importar-overleaf.ps1) — espelha um projeto do
+  Overleaf (zip do código-fonte) numa pasta local para versionar no git. Baixa direto com a sessão
+  do [overleaf-mcp-rt](https://github.com/DanielHou315/overleaf-mcp-rt) (sem expor o cookie) ou usa
+  um zip baixado à mão, com travas para não apagar nada fora da cópia.
+- [`ferramentas/compilar-latex.ps1`](ferramentas/compilar-latex.ps1) — compila um documento LaTeX
+  numa pasta de build separada (pdflatex → bibtex/biber → glossários/índices → pdflatex ×2,
+  `-shell-escape` automático para `minted`) e resume erros, referências indefinidas, avisos da
+  bibliografia e *overfull hbox*. Aceita um TeX Live específico (`-TexBin`).
 
 ## Instalação
 

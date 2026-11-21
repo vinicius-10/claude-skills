@@ -103,14 +103,32 @@ colar; (4) pendências marcadas. Ortografia não precisa ser listada uma a uma.
 - Rótulos sem acento/cedilha, únicos. Prefixos: `cap:`, `sec:`, `sub:`, `fig:`, `tab:`, `quad:`, `lst:`, `eq:`.
 - Não mexer no preâmbulo; pacote novo só por sugestão (e compatível com a versão do TeX Live do projeto).
 
-## 5. Requisitos do documento
+## 5. Requisitos e estrutura do desenvolvimento
 
 Se o perfil tiver um **mapa requisito → seção** (enunciado, edital, roteiro do orientador), ao
 revisar o documento inteiro conferir item a item e listar no resumo o que ainda falta.
 
+**Roteiro por bloco** (trabalhos técnicos: hardware, software, sistemas). Quando o desenvolvimento
+descreve componentes (módulos de RTL, serviços, versões de um algoritmo), uma subseção por bloco,
+na ordem do autor, cada uma **em parágrafos** seguindo:
+
+1. função do bloco no sistema (1 parágrafo);
+2. entradas e saídas com os nomes reais (texto; tabela se forem muitas);
+3. funcionamento e decisões de projeto, com o motivo e comparações (alternativas, medições, literatura);
+4. validação: teste/testbench usado, como os estímulos são aplicados, quantidade de casos e resultado.
+
+Criar `\subsubsection`/`\paragraph` só quando o assunto pedir (vários tópicos longos); um tópico de
+um ou dois parágrafos fica como parágrafo.
+
 ## 6. Compilar e conferir
 
-- Local: o `comando_compilacao` do perfil. Overleaf: `overleaf_compile` no projeto do perfil.
+- Local: o `comando_compilacao` do perfil; sem ele, a ferramenta
+  `ferramentas/compilar-latex.ps1` do repositório desta skill (compila numa cópia em `build/`, sem
+  sujar a pasta do documento, e resume erros, referências indefinidas, avisos do BibTeX/Biber e
+  *overfull hbox*; aceita `-TexBin` para um TeX Live específico exigido pelo template).
+  Overleaf: `overleaf_compile` no projeto do perfil.
+- Template que exige uma versão específica do TeX Live (ex.: 2021): compilar localmente com ela
+  antes da entrega, mesmo que o Overleaf use outra — o resultado pode diferir.
 - Antes de encerrar uma edição: **0 erros** e nenhuma citação/referência indefinida nova; *overfull
   hbox* do trecho editado corrigido.
 - Avisos conhecidos do template (lista do perfil) podem ser ignorados.

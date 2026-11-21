@@ -11,6 +11,7 @@ esses campos; o que ficar em branco usa o padrão de cada skill. Apague as linha
 - **repositorio** (fazer-commit): pasta do git, se não for a raiz (ex.: `projeto/`).
 - **escopos** (fazer-commit): ex.: `api`, `web`, `banco`, `testes`, `docs`, `relatorio`.
 - **comando_testes** (fazer-commit, planejar-tarefa, medir-desempenho): ex.: `python -m pytest -q`.
+- **enviar_automatico** (fazer-commit): `sim` (padrão: push depois de todo commit) ou `não`.
 - **nunca_commitar** (fazer-commit): ex.: `.claude/`, `CLAUDE.md`, `build/`, `*.xpr`, dados brutos.
 - **equipe** (fazer-commit, planejar-tarefa): integrantes e quem cuida de quê; repositório compartilhado?
 - **pasta_planos** (planejar-tarefa): ex.: `docs/planos/` (ou fora do repositório, se o grupo não quer material de IA no git).

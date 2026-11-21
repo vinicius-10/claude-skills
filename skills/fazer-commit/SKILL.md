@@ -1,6 +1,6 @@
 ---
 name: fazer-commit
-description: Use quando o usuário pedir para fazer commit, separar mudanças em vários commits, sincronizar com o remoto (pull/push), resolver conflitos de merge ou digitar /fazer-commit. Examina o diff, separa as mudanças em commits lógicos, roda os testes do projeto quando há código, escreve mensagens Conventional Commits em português, integra o trabalho de outras pessoas e resolve conflitos entendendo os dois lados (base, nosso, deles). NÃO usar para pull request, rebase, amend, force push ou para só sugerir uma mensagem sem commitar.
+description: Use quando o usuário pedir para fazer commit, separar mudanças em vários commits, sincronizar com o remoto (pull/push), resolver conflitos de merge ou digitar /fazer-commit. Examina o diff, separa as mudanças em commits lógicos, roda os testes do projeto quando há código, escreve mensagens Conventional Commits em português, integra o trabalho de outras pessoas, resolve conflitos entendendo os dois lados (base, nosso, deles) e sempre envia para o remoto ao final. NÃO usar para pull request, rebase, amend, force push ou para só sugerir uma mensagem sem commitar.
 ---
 
 # Fazer commits (Conventional Commits, em português)
@@ -13,9 +13,13 @@ usar `repositorio` (pasta do git, se não for a raiz), `escopos`, `comando_teste
 `nunca_commitar` e `equipe` (modelo em `modelos/CLAUDE-perfil.md`). Sem perfil, inferir os
 escopos dos nomes de pastas/módulos e do histórico (`git log`), e os testes pelo README.
 
-Só faça commit quando o usuário pedir. Pull e push só quando ele pedir (ou aprovar na hora). Não
-abra PR e não reescreva histórico (`--amend`, `rebase`, `reset --hard`, `push --force`) sem pedido
-explícito — em repositório compartilhado isso apaga trabalho de outra pessoa.
+Só faça commit quando o usuário pedir. **Depois de commitar, sempre envie para o remoto** (push):
+nada fica só local, para não perder trabalho nem divergir do grupo. Se a branch estiver atrás do
+`origin`, integre antes (seção "Sincronizar") e então envie. Repositório sem remote: avise e
+ofereça criar um (ex.: `gh repo create`). Para desligar o envio automático num projeto, o perfil
+pode dizer `enviar_automatico: não`. Não abra PR e não reescreva histórico (`--amend`, `rebase`,
+`reset --hard`, `push --force`) sem pedido explícito — em repositório compartilhado isso apaga
+trabalho de outra pessoa.
 
 ## Formato
 
@@ -109,10 +113,15 @@ Um commit = uma mudança lógica que faz sentido sozinha e passa nos testes.
    Em PowerShell, use `git commit -F <arquivo>` com o texto num arquivo temporário ou vários `-m`.
 6. **Conferir:** `git log --oneline -<n>` e `git status --short` (o que sobrou deve ser só o que
    ficou de fora de propósito).
-7. **Relatar:** lista dos commits (hash curto + primeira linha), o que ficou de fora e por quê, e
-   se houve push ou não.
+7. **Enviar (sempre):** `git push origin <branch>` (branch nova: `push -u origin <branch>`).
+   Recusado porque o `origin` andou → integrar (seção "Sincronizar", com resolução de conflitos se
+   houver) e enviar de novo; **nunca** `--force`. Conferir com `git status -sb` que não ficou nada
+   à frente do `origin`. Falha de rede/autenticação → avisar o usuário com o erro; não deixar
+   parecer que foi enviado.
+8. **Relatar:** lista dos commits (hash curto + primeira linha), o que ficou de fora e por quê, e
+   a confirmação do envio (branch e remoto).
 
-## Sincronizar com o remoto (quando o usuário pedir pull/push)
+## Sincronizar com o remoto (antes do envio, ou quando o usuário pedir pull)
 
 1. **Antes de integrar:** working tree limpa (commite ou pergunte o que fazer com o pendente; não
    use `git stash` sem avisar). `git fetch` e veja o que chegou:
@@ -122,8 +131,8 @@ Um commit = uma mudança lógica que faz sentido sozinha e passa nos testes.
    `git pull --no-rebase --no-edit origin <branch>`. Rebase só se o usuário pedir.
 3. Sem conflito → rode `comando_testes` se entrou código.
 4. Com conflito → seção "Resolver conflitos".
-5. **Push** (`git push origin <branch>`) só com pedido/aprovação. Recusado por estar atrás →
-   integrar de novo; **nunca** `--force`.
+5. **Push** (`git push origin <branch>`) logo em seguida, como no passo 7 do Fluxo. Recusado por
+   estar atrás → integrar de novo; **nunca** `--force`.
 
 ## Resolver conflitos
 

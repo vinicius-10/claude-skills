@@ -115,8 +115,16 @@ try {
     if (Test-Path "$base.nlo") { Run makeindex @("$base.nlo", "-s", "nomencl.ist", "-o", "$base.nls") "nomencl.txt" | Out-Null }
     Write-Host "[4/5] pdflatex"
     Run pdflatex $tex "run2.txt" | Out-Null
-    Write-Host "[5/5] pdflatex"
-    $rc = Run pdflatex $tex "run3.txt"
+    # Repete ate as referencias/sumario estabilizarem (como o latexmk): quando o sumario ou uma
+    # lista muda de tamanho, as paginas mudam e o LaTeX pede "Rerun". Limite de 5 passadas.
+    $n = 3
+    do {
+        Write-Host "[5/5] pdflatex (passada $n)"
+        $rc = Run pdflatex $tex "run$n.txt"
+        $precisa = Select-String -Path "$base.log" -Pattern 'Rerun to get|Label\(s\) may have changed|Rerun LaTeX' -Quiet
+        $n++
+    } while ($precisa -and $n -le 5)
+    if ($precisa) { Write-Warning "O LaTeX ainda pede nova passada depois de 5; numeros de pagina podem estar desatualizados." }
 
     $log = Get-Content "$base.log" -Encoding Default
     $max = if ($ShowLog) { [int]::MaxValue } else { 15 }

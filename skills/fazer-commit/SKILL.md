@@ -1,6 +1,6 @@
 ---
 name: fazer-commit
-description: Use quando o usuário pedir para fazer commit, separar mudanças em vários commits, sincronizar com o remoto (pull/push), resolver conflitos de merge ou digitar /fazer-commit. Examina o diff, separa as mudanças em commits lógicos, roda os testes do projeto quando há código, escreve mensagens Conventional Commits em português, integra o trabalho de outras pessoas, resolve conflitos entendendo os dois lados (base, nosso, deles) e sempre envia para o remoto ao final. NÃO usar para pull request, rebase, amend, force push ou para só sugerir uma mensagem sem commitar.
+description: Use quando o usuário pedir para fazer commit, separar mudanças em vários commits, sincronizar com o remoto (pull/push), resolver conflitos de merge ou digitar /fazer-commit. Examina o diff, separa as mudanças em commits lógicos, roda os testes do projeto quando há código, escreve mensagens Conventional Commits em português, integra o trabalho de outras pessoas, resolve conflitos entendendo os dois lados (base, nosso, deles) e sempre envia para o remoto ao final. Em repositório compartilhado, trabalho novo vai numa branch própria (criar branch, PR, revisão e merge: skill fluxo-equipe). NÃO usar para rebase, amend, force push ou para só sugerir uma mensagem sem commitar.
 ---
 
 # Fazer commits (Conventional Commits, em português)
@@ -17,9 +17,10 @@ Só faça commit quando o usuário pedir. **Depois de commitar, sempre envie par
 nada fica só local, para não perder trabalho nem divergir do grupo. Se a branch estiver atrás do
 `origin`, integre antes (seção "Sincronizar") e então envie. Repositório sem remote: avise e
 ofereça criar um (ex.: `gh repo create`). Para desligar o envio automático num projeto, o perfil
-pode dizer `enviar_automatico: não`. Não abra PR e não reescreva histórico (`--amend`, `rebase`,
-`reset --hard`, `push --force`) sem pedido explícito — em repositório compartilhado isso apaga
-trabalho de outra pessoa.
+pode dizer `enviar_automatico: não`. Em repositório compartilhado o envio vai para a branch do
+trabalho, não para a principal (GitHub Flow, skill `fluxo-equipe`). Não abra PR sem pedido e não
+reescreva histórico (`--amend`, `rebase`, `reset --hard`, `push --force`) sem pedido explícito —
+em repositório compartilhado isso apaga trabalho de outra pessoa.
 
 ## Formato
 
@@ -90,8 +91,11 @@ Um commit = uma mudança lógica que faz sentido sozinha e passa nos testes.
 1. **Histórico, branch e remoto:** `git log --oneline -10` (manter o estilo),
    `git branch --show-current` e, se houver remote, `git fetch` + `git status -sb` para saber se a
    branch está atrás/à frente. Se estiver atrás, avise (o push vai pedir integração; ver
-   "Sincronizar"). Na branch principal de um repositório compartilhado, pergunte se deve criar uma
-   branch antes. Primeiro commit de um repositório vazio pode ir direto na principal.
+   "Sincronizar"). **Na branch principal de um repositório compartilhado:** só o que estiver em
+   `direto_na_principal` (perfil, subseção fluxo_equipe) é commitado direto; o resto → criar a
+   branch `tipo/assunto` antes (`git switch -c`, que leva as mudanças junto; regras na
+   `fluxo-equipe`) e avisar o nome. Sem perfil de fluxo, pergunte. Primeiro commit de um
+   repositório vazio pode ir direto na principal.
 2. **Ver as mudanças:** `git status --short`, `git diff --stat`, `git diff` (e `--staged`). Sem
    mudanças → avise e pare; nunca commit vazio.
 3. **Planejar os commits:** agrupar por mudança lógica; definir tipo, escopo e resumo de cada um.
@@ -128,7 +132,8 @@ Um commit = uma mudança lógica que faz sentido sozinha e passa nos testes.
    `git log --oneline HEAD..origin/<branch>` (dos outros) e `git log --oneline origin/<branch>..HEAD`
    (seus). Resuma ao usuário quem mudou o quê.
 2. **Integrar com merge** (padrão: preserva o histórico de todos):
-   `git pull --no-rebase --no-edit origin <branch>`. Rebase só se o usuário pedir.
+   `git pull --no-rebase --no-edit origin <branch>`. Rebase só se o usuário pedir. Numa branch de
+   trabalho, trazer também a principal quando ela andou: `git merge --no-edit origin/<principal>`.
 3. Sem conflito → rode `comando_testes` se entrou código.
 4. Com conflito → seção "Resolver conflitos".
 5. **Push** (`git push origin <branch>`) logo em seguida, como no passo 7 do Fluxo. Recusado por
@@ -169,7 +174,8 @@ escuro": é o trabalho de outra pessoa que pode sumir.
 7. **Desistir é seguro:** `git merge --abort` volta ao estado anterior sem perder nada.
 
 **Prevenção** (sugerir quando fizer sentido): fetch/pull antes de começar; commits pequenos e
-frequentes; uma branch por frente de trabalho; combinar quem mexe nos arquivos compartilhados.
+frequentes; uma branch por trabalho (`fluxo-equipe`); trazer a principal para a branch com
+frequência; combinar quem mexe nos arquivos compartilhados.
 
 ## Segurança
 

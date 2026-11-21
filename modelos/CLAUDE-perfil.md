@@ -25,6 +25,15 @@ esses campos; o que ficar em branco usa o padrão de cada skill. Apague as linha
 - **pasta_experimentos** (medir-desempenho): ex.: `experimentos/`.
 - **maquina** (medir-desempenho): CPU (núcleos físicos/lógicos, P/E), RAM, SO — ou "capturar na hora".
 
+### fluxo_equipe (fluxo-equipe, fazer-commit, planejar-tarefa)
+- **branch_principal**: `main`.
+- **tipo_merge**: `merge` (merge commit, preserva todos os commits) | `squash`.
+- **aprovacoes**: `1` (aprovações de outros integrantes para o PR entrar).
+- **quem_faz_merge**: ex.: "qualquer integrante, depois da aprovação".
+- **direto_na_principal**: o que pode ir sem PR, ex.: "sincronização do relatório `docs(relatorio)`" (ou nada).
+- **ci**: `nenhum` (testes local, resultado no PR) | nome do *check* do GitHub Actions.
+- **checklist_revisao**: restrições do projeto a conferir em todo PR (ex.: "sem NumPy no cálculo").
+
 ### documento (escrever-documento-latex, abnt-academico)
 - **onde**: pasta local `tcc/` | Overleaf `https://<host>/project/<id>` (via MCP overleaf-mcp-rt).
 - **arquivo_principal**: `main.tex`.

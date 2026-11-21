@@ -55,6 +55,7 @@ resumo no chat. Estrutura:
 ```markdown
 # <Título>
 Data: AAAA-MM-DD · Status: proposto | aprovado | concluído · Responsável(is): <nomes>
+Branch: `tipo/assunto` (repositório compartilhado; skill fluxo-equipe)
 
 ## Objetivo e critério de pronto
 ## Decisões (dúvida → escolha → motivo [→ referência])
@@ -87,6 +88,8 @@ novo. Só com "aprovado" marque `Status: aprovado` e siga.
 
 ## Passo 5 — Executar o plano aprovado
 
+0. **Branch:** em repositório compartilhado, criar a branch do plano a partir da principal
+   atualizada (skill `fluxo-equipe`) antes da primeira edição.
 1. **Teste primeiro:** escreva/estenda os testes do plano e rode — confirme que falham pelo motivo
    esperado (a funcionalidade ainda não existe), não por erro de sintaxe ou ambiente.
 2. Implemente na ordem dos passos. Rode os testes afetados a cada passo relevante.

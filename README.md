@@ -13,6 +13,7 @@ Escritas em português.
 | [`medir-desempenho`](skills/medir-desempenho/SKILL.md) | Metodologia de benchmark: validade antes de tempo, decomposição de tempos, repetições e mediana, captura automática do hardware (Windows/macOS/Linux), CSV padrão, speedup, eficiência, Karp–Flatt, gráficos. |
 | [`escrever-documento-latex`](skills/escrever-documento-latex/SKILL.md) | Escreve e revisa TCC/relatório/artigo em LaTeX (local ou Overleaf) sem trocar a voz do autor: o que pode ser editado, fontes de verdade, estilo impessoal, padrões de figura/tabela/sigla/citação, compilação e cópia versionada no git. |
 | [`otimizar-timing-fpga`](skills/otimizar-timing-fpga/SKILL.md) | Fechar *timing* e reduzir área em FPGA (Vivado, 7-series/UltraScale): fluxo *non-project* reprodutível, leitura do caminho crítico por primitiva, alavancas da menos para a mais invasiva, ruído de *placement* e relato antes → depois. |
+| [`delegar-gemini`](skills/delegar-gemini/SKILL.md) | Poupa o limite de uso do Claude repassando leitura pesada ao Gemini (Antigravity CLI, gratuito): PDF → resumo em Markdown, transcrição de imagens, revisão visual de renders do Blender contra referências, logs e relatórios grandes. O Gemini só lê; comandos que ele precisar são propostos ao Claude, que executa os de leitura e pede aprovação para os que alteram algo. |
 | [`abnt-academico`](skills/abnt-academico/SKILL.md) | Normalização ABNT (NBR 14724:2024, 10520:2023, 6023, 6028...) e APA 7, com perfil para a **UTFPR** (referências pela NBR 6023:2018 e convenções do template LaTeX `utfpr.cls`). Baseada no projeto de Carlos Alberto Ferreira (MIT). |
 
 Ferramentas (PowerShell, Windows):
@@ -59,6 +60,7 @@ razoáveis ou pergunta.
 - **Overleaf:** MCP [`overleaf-mcp-rt`](https://github.com/DanielHou315/overleaf-mcp-rt) (Node 20+)
   para `escrever-documento-latex` e `abnt-academico` editarem e compilarem no Overleaf.
 - **PowerShell** (Windows) para `importar-overleaf.ps1` e para a captura de hardware no Windows.
+- **Antigravity CLI** (`agy`, logado na conta Google) e **Node.js 18+** para `delegar-gemini`.
 
 ## Créditos e licença
 
